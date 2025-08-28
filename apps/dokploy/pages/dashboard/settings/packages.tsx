@@ -3,19 +3,19 @@ import { createServerSideHelpers } from "@trpc/react-query/server";
 import type { GetServerSidePropsContext } from "next";
 import type { ReactElement } from "react";
 import superjson from "superjson";
-import { ShowBilling } from "@/components/dashboard/settings/billing/show-billing";
+import PackageManagement from "@/components/dashboard/settings/packages/package-management";
 import { DashboardLayout } from "@/components/layouts/dashboard-layout";
 import { appRouter } from "@/server/api/root";
 
 const Page = () => {
-return <ShowBilling />;
+return <PackageManagement />;
 };
 
 export default Page;
 
 Page.getLayout = (page: ReactElement) => {
 return (
-<DashboardLayout metaName="Billing">{page}</DashboardLayout>
+<DashboardLayout metaName="Package Management">{page}</DashboardLayout>
 );
 };
 

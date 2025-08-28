@@ -3,6 +3,7 @@ import { adminRouter } from "./routers/admin";
 import { aiRouter } from "./routers/ai";
 import { applicationRouter } from "./routers/application";
 import { backupRouter } from "./routers/backup";
+import { billingRouter } from "./routers/billing";
 import { bitbucketRouter } from "./routers/bitbucket";
 import { certificateRouter } from "./routers/certificate";
 import { clusterRouter } from "./routers/cluster";
@@ -59,6 +60,7 @@ export const appRouter = createTRPCRouter({
 	domain: domainRouter,
 	destination: destinationRouter,
 	backup: backupRouter,
+        billing: billingRouter,
 	deployment: deploymentRouter,
 	previewDeployment: previewDeploymentRouter,
 	mounts: mountRouter,
@@ -86,5 +88,6 @@ export const appRouter = createTRPCRouter({
 	volumeBackups: volumeBackupsRouter,
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter;
+

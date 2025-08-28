@@ -13,6 +13,7 @@ import {
 	CircleHelp,
 	Clock,
 	CreditCard,
+Package,
 	Database,
 	Folder,
 	Forward,
@@ -357,6 +358,31 @@ const MENU: Menu = {
 			title: "Billing",
 			url: "/dashboard/settings/billing",
 			icon: CreditCard,
+Package,
+			// Only enabled for admins in cloud environments
+			isEnabled: ({ auth, isCloud }) => !!(auth?.role === "owner" && isCloud),
+		},
+		{
+			isSingle: true,
+			title: "Billing Admin",
+			url: "/dashboard/settings/billing-admin",
+			icon: Package,
+			// Only enabled for admins in cloud environments
+			isEnabled: ({ auth, isCloud }) => !!(auth?.role === "owner" && isCloud),
+		},
+		{
+			isSingle: true,
+			title: "API Keys",
+			url: "/dashboard/settings/api-keys",
+			icon: KeyRound,
+			// Only enabled for admins
+			isEnabled: ({ auth }) => !!(auth?.role === "owner"),
+		},
+		{
+			isSingle: true,
+			title: "Packages",
+			url: "/dashboard/settings/packages",
+			icon: Package,
 			// Only enabled for admins in cloud environments
 			isEnabled: ({ auth, isCloud }) => !!(auth?.role === "owner" && isCloud),
 		},

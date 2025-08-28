@@ -140,7 +140,7 @@ importers:
         specifier: 6.29.0
         version: 6.29.0
       '@dokploy/server':
-        specifier: workspace:*
+        specifier: link:..\..\packages\server
         version: link:../../packages/server
       '@dokploy/trpc-openapi':
         specifier: 0.0.4

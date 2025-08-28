@@ -1,29 +1,40 @@
 {
   "name": "@dokploy/server",
   "version": "1.0.0",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js"
+    },
     "./db": {
-      "import": "./src/db/index.ts",
+      "import": "./dist/db/index.js",
       "require": "./dist/db/index.cjs.js"
     },
-    "./setup/*": {
-      "import": "./src/setup/*.ts",
-      "require": "./dist/setup/index.cjs.js"
+    "./*": {
+      "import": "./dist/*",
+      "require": "./dist/*.cjs"
     },
-    "./constants": {
-      "import": "./src/constants/index.ts",
-      "require": "./dist/constants.cjs.js"
+    "./dist": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./dist/db": {
+      "import": "./dist/db/index.js",
+      "require": "./dist/db/index.cjs.js"
+    },
+    "./dist/db/schema": {
+      "import": "./dist/db/schema/index.js",
+      "require": "./dist/db/schema/index.cjs.js"
     }
   },
   "scripts": {
-    "build": "npm run switch:prod && rm -rf ./dist && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
+    "build": "npm run switch:prod && if exist dist rmdir /s /q dist && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "build:types": "tsc --emitDeclarationOnly --experimenta-dts",
     "switch:dev": "node scripts/switchToSrc.js",
     "switch:prod": "node scripts/switchToDist.js",
-    "dev": "rm -rf ./dist && pnpm esbuild && tsc --emitDeclarationOnly --outDir dist -p tsconfig.server.json",
+    "dev": "if exist dist rmdir /s /q dist && pnpm esbuild && tsc --emitDeclarationOnly --outDir dist -p tsconfig.server.json",
     "esbuild": "tsx ./esbuild.config.ts && tsc --project tsconfig.server.json --emitDeclarationOnly ",
     "typecheck": "tsc --noEmit"
   },

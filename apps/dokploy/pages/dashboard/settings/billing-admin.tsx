@@ -1,27 +1,37 @@
-﻿import { validateRequest } from "@dokploy/server/lib/auth";
+﻿import { IS_CLOUD } from "@dokploy/server/constants";
+import { validateRequest } from "@dokploy/server/lib/auth";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import type { GetServerSidePropsContext } from "next";
 import type { ReactElement } from "react";
 import superjson from "superjson";
-import { ShowBilling } from "@/components/dashboard/settings/billing/show-billing";
+import BillingAdminPanel from "@/components/dashboard/settings/billing/billing-admin-panel";
 import { DashboardLayout } from "@/components/layouts/dashboard-layout";
 import { appRouter } from "@/server/api/root";
 
 const Page = () => {
-return <ShowBilling />;
+return <BillingAdminPanel />;
 };
 
 export default Page;
 
 Page.getLayout = (page: ReactElement) => {
 return (
-<DashboardLayout metaName="Billing">{page}</DashboardLayout>
+<DashboardLayout metaName="Billing Admin">{page}</DashboardLayout>
 );
 };
 
 export async function getServerSideProps(
 ctx: GetServerSidePropsContext<{ serviceId: string }>,
 ) {
+if (!IS_CLOUD) {
+return {
+redirect: {
+permanent: true,
+destination: "/dashboard/projects",
+},
+};
+}
+
 const { req, res } = ctx;
 const { user, session } = await validateRequest(req);
 
