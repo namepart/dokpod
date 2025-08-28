@@ -1,120 +1,200 @@
-<div align="center">
-  <a href="https://dokploy.com">
-    <img src=".github/sponsors/logo.png" alt="Dokploy - Open Source Alternative to Vercel, Heroku and Netlify." width="100%"  />
-  </a>
-  </br>
-  </br>
-  <p>Join us on Discord for help, feedback, and discussions!</p>
-  <a href="https://discord.gg/2tBnJ3jDJc">
-    <img src="https://discordapp.com/api/guilds/1234073262418563112/widget.png?style=banner2" alt="Discord Shield"/>
-  </a>
-</div>
-<br />
+﻿# 🚀 Dokpod - Complete Billing System Integration
 
-Dokploy is a free, self-hostable Platform as a Service (PaaS) that simplifies the deployment and management of applications and databases.
+A comprehensive billing and subscription management system built on top of Dokploy with full resource control capabilities.
 
 ## ✨ Features
 
-Dokploy includes multiple features to make your life easier.
+### 💳 Billing Integration
+- **WHMCS Integration** - Complete WHMCS API support
+- **Stripe Integration** - Full Stripe payment processing
+- **PayPal Integration** - PayPal webhook handling
+- **Webhook Management** - Real-time payment notifications
 
-- **Applications**: Deploy any type of application (Node.js, PHP, Python, Go, Ruby, etc.).
-- **Databases**: Create and manage databases with support for MySQL, PostgreSQL, MongoDB, MariaDB, and Redis.
-- **Backups**: Automate backups for databases to an external storage destination.
-- **Docker Compose**: Native support for Docker Compose to manage complex applications.
-- **Multi Node**: Scale applications to multiple nodes using Docker Swarm to manage the cluster.
-- **Templates**: Deploy open-source templates (Plausible, Pocketbase, Calcom, etc.) with a single click.
-- **Traefik Integration**: Automatically integrates with Traefik for routing and load balancing.
-- **Real-time Monitoring**: Monitor CPU, memory, storage, and network usage for every resource.
-- **Docker Management**: Easily deploy and manage Docker containers.
-- **CLI/API**: Manage your applications and databases using the command line or through the API.
-- **Notifications**: Get notified when your deployments succeed or fail (via Slack, Discord, Telegram, Email, etc.).
-- **Multi Server**: Deploy and manage your applications remotely to external servers.
-- **Self-Hosted**: Self-host Dokploy on your VPS.
+### 📦 Package Management
+- **Resource Control** - Memory, CPU, storage limits
+- **Multi-tier Packages** - Basic, Pro, Enterprise plans
+- **User Limits** - Projects, applications, databases, domains, users
+- **Feature Control** - Backups, monitoring, SSL, custom domains
 
-## 🚀 Getting Started
+### 🗄️ Database Schema
+- **billing_provider** - Payment provider configurations
+- **billing_package** - Subscription packages with limits
+- **user_subscription** - User billing subscriptions
+- **billing_transaction** - Payment transaction logs
+- **billing_webhook** - Webhook processing logs
 
-To get started, run the following command on a VPS:
+## 📋 Package Tiers
 
-Want to skip the installation process? [Try the Dokploy Cloud](https://app.dokploy.com).
+### Basic Plan - $9.99/month
+- 5 Projects
+- 10 Applications
+- 3 Databases
+- 5 Domains
+- 2 Users
+- Features: Backups, Monitoring, SSL
 
+### Pro Plan - $29.99/month
+- 20 Projects
+- 50 Applications
+- 10 Databases
+- 20 Domains
+- 5 Users
+- Features: + Custom Domains, API Access, Priority Support
+
+### Enterprise Plan - $99.99/month
+- Unlimited Projects
+- Unlimited Applications
+- Unlimited Databases
+- Unlimited Domains
+- Unlimited Users
+- Features: + White Label
+
+## 🛠️ Installation
+
+### Prerequisites
+- Node.js 20.16.0+
+- PostgreSQL database
+- Git
+
+### Setup
+
+1. **Clone Repository**
 ```bash
-curl -sSL https://dokploy.com/install.sh | sh
+git clone https://github.com/namepart/dokpod.git
+cd dokpod
 ```
 
-For detailed documentation, visit [docs.dokploy.com](https://docs.dokploy.com).
+2. **Install Dependencies**
+```bash
+pnpm install
+```
 
-## ♥️ Sponsors
+3. **Database Migration**
+```bash
+# Run the billing system migration
+psql -d your_database -f apps/dokploy/drizzle/0107_billing_system.sql
+```
 
-🙏 We're deeply grateful to all our sponsors who make Dokploy possible! Your support helps cover the costs of hosting, testing, and developing new features.
+4. **Environment Configuration**
+```bash
+cp apps/dokploy/.env.example apps/dokploy/.env
+# Configure your billing provider settings
+```
 
-[Dokploy Open Collective](https://opencollective.com/dokploy)
+5. **Start Development**
+```bash
+pnpm dev
+```
 
-[Github Sponsors](https://github.com/sponsors/Siumauricio)
+## ⚙️ Configuration
 
-<!-- Hero Sponsors 🎖 -->
+### Environment Variables
 
-<!-- Add Hero Sponsors here -->
+```env
+# WHMCS Configuration
+WHMCS_ENABLED=true
+WHMCS_URL=https://your-whmcs.com
+WHMCS_IDENTIFIER=your_api_identifier
+WHMCS_SECRET=your_api_secret
 
-### Hero Sponsors 🎖
+# Stripe Configuration
+STRIPE_ENABLED=true
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 
-<div>
-  <a href="https://www.hostinger.com/vps-hosting?ref=dokploy"><img src=".github/sponsors/hostinger.jpg" alt="Hostinger" width="300"/></a>
-  <a href="https://www.lxaer.com/?ref=dokploy"><img src=".github/sponsors/lxaer.png" alt="LX Aer" width="100"/></a>
-</div>
+# PayPal Configuration
+PAYPAL_ENABLED=true
+PAYPAL_CLIENT_ID=your_paypal_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_secret
+PAYPAL_MODE=sandbox
+```
 
-<!-- Premium Supporters 🥇 -->
+## 🎯 API Endpoints
 
-<!-- Add Premium Supporters here -->
+### Billing Providers
+- `GET /api/trpc/billing.getBillingProviders` - Get all providers
+- `POST /api/trpc/billing.createBillingProvider` - Create provider
+- `PUT /api/trpc/billing.updateBillingProvider` - Update provider
 
-### Premium Supporters 🥇
+### Packages
+- `GET /api/trpc/billing.getPackages` - Get all packages
+- `POST /api/trpc/billing.createPackage` - Create package
+- `PUT /api/trpc/billing.updatePackage` - Update package
 
-<div>
-  <a href="https://supafort.com/?ref=dokploy"><img src="https://supafort.com/build/q-4Ht4rBZR.webp" alt="Supafort.com" width="300"/></a>
-  <a href="https://agentdock.ai/?ref=dokploy"><img src=".github/sponsors/agentdock.png" alt="agentdock.ai" width="100"/></a>
-</div>
+### Webhooks
+- `POST /api/billing/webhooks/whmcs` - WHMCS webhook
+- `POST /api/billing/webhooks/stripe` - Stripe webhook
+- `POST /api/billing/webhooks/paypal` - PayPal webhook
 
-<!-- Elite Contributors 🥈 -->
+## 🎨 UI Components
 
-<!-- Add Elite Contributors here -->
+### Admin Panels
+- **Billing Admin Panel** - Provider management
+- **Package Management** - Resource limit configuration
+- **Billing Overview** - Dashboard and analytics
 
-### Elite Contributors 🥈
+### User Interface
+- **Billing Settings** - User billing configuration
+- **Package Selection** - Subscription management
+- **Payment History** - Transaction logs
 
-<div>
-  <a href="https://americancloud.com/?ref=dokploy"><img src=".github/sponsors/american-cloud.png" alt="AmericanCloud" width="300"/></a>
-  <a href="https://tolgee.io/?utm_source=github_dokploy&utm_medium=banner&utm_campaign=dokploy"><img src="https://dokploy.com/tolgee-logo.png" alt="Tolgee" width="100"/></a>
-</div>
+## 📊 Database Schema
 
-### Supporting Members 🥉
+### Resource Control Fields
+```sql
+-- Package Resource Limits
+memory_limit INTEGER,        -- RAM in MB
+cpu_limit INTEGER,          -- CPU units
+max_projects INTEGER,       -- Project limit
+max_applications INTEGER,   -- Application limit
+max_databases INTEGER,      -- Database limit
+max_domains INTEGER,        -- Domain limit
+max_users INTEGER,          -- User limit
+storage_limit INTEGER,      -- Storage in GB
+```
 
-<div>
+## 🔧 Development
 
-  <a href="https://cloudblast.io/?ref=dokploy"><img src="https://cloudblast.io/img/logo-icon.193cf13e.svg" width="250px" alt="Cloudblast.io"/></a>
+### Build
+```bash
+pnpm build
+```
 
-  <a href="https://synexa.ai/?ref=dokploy"><img src=".github/sponsors/synexa.png" width="65px" alt="Synexa"/></a>
-</div>
+### Type Check
+```bash
+pnpm typecheck
+```
 
-### Community Backers 🤝
+### Database Migration
+```bash
+pnpm drizzle-kit generate
+pnpm drizzle-kit migrate
+```
 
-#### Organizations:
+## 🏷️ Releases
 
-[Sponsors on Open Collective](https://opencollective.com/dokploy)
+- **v1.0-billing-system** - Complete billing integration with resource control
 
-#### Individuals:
+## 📄 License
 
-[![Individual Contributors on Open Collective](https://opencollective.com/dokploy/individuals.svg?width=890)](https://opencollective.com/dokploy)
-
-### Contributors 🤝
-
-<a href="https://github.com/dokploy/dokploy/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=dokploy/dokploy" alt="Contributors" />
-</a>
-
-## 📺 Video Tutorial
-
-<a href="https://youtu.be/mznYKPvhcfw">
-  <img src="https://dokploy.com/banner.png" alt="Watch the video" width="400"/>
-</a>
+MIT License - see LICENSE.md for details
 
 ## 🤝 Contributing
 
-Check out the [Contributing Guide](CONTRIBUTING.md) for more information.
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/billing-enhancement`)
+3. Commit changes (`git commit -am 'Add new billing feature'`)
+4. Push to branch (`git push origin feature/billing-enhancement`)
+5. Create Pull Request
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Review existing issues
+
+---
+
+**Built with ❤️ using Dokploy + Complete Billing System Integration**
