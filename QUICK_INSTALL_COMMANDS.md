@@ -2,7 +2,7 @@
 
 ## 🚀 One-Command Setup Script
 
-আপনার সুবিধার জন্য একটি automated installation script:
+Automated installation script for your convenience:
 
 ### Create Installation Script
 ```bash
@@ -466,7 +466,7 @@ chmod +x maintain-dokpod.sh
 
 ## 📝 Complete Installation Process
 
-আপনার সার্ভারে SSH করার পর এই commands গুলো run করুন:
+After SSH into your server, run these commands:
 
 ```bash
 # 1. Create installation directory and scripts
@@ -488,6 +488,6 @@ cd ~/dokpod-install
 ./maintain-dokpod.sh status
 ```
 
-এই guide এবং scripts দিয়ে আপনি আপনার customized Dokpod সফলভাবে live server এ install এবং maintain করতে পারবেন!
+With this guide and scripts, you can successfully install and maintain your customized Dokpod on a live server!
 
-আপনার যদি কোন specific step এ সমস্যা হয়, আমাকে জানান। আমি আপনাকে troubleshoot করতে সাহায্য করব! 🚀
+If you face any issues with specific steps, let me know. I'll help you troubleshoot! 🚀
