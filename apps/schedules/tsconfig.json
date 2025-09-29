@@ -5,10 +5,21 @@
 		"moduleResolution": "Node",
 		"strict": true,
 		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
 		"outDir": "dist",
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
-		"declaration": false
+		"declaration": false,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./*"],
+			"@dokploy/server/*": ["../../packages/server/src/*"],
+			"@dokploy/server/dist/*": ["../../packages/server/dist/*"]
+		}
 	},
-	"exclude": ["node_modules", "dist"]
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist", "../../packages/server/src/**/*"],
+	"ts-node": {
+		"esm": true
+	}
 }

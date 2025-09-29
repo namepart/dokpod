@@ -1,3 +1,10 @@
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import {
+	adminProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+} from "@/server/api/trpc";
 import {
 	checkQuota,
 	createBillingProvider,
@@ -13,13 +20,19 @@ import {
 	updatePackage,
 	updateSubscriptionStatus,
 } from "../../../lib/billing";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { getConfigSummary } from "../../../lib/config-helpers";
 import {
-	adminProcedure,
-	createTRPCRouter,
-	protectedProcedure,
-} from "@/server/api/trpc";
+	testBillingTableOperations,
+	validateBillingDatabase,
+} from "../../../lib/database-validation";
+import {
+	getEnvironmentSummary,
+	validateBillingEnvironment,
+} from "../../../lib/environment-validation";
+import {
+	getSystemStatus,
+	performHealthCheck,
+} from "../../../lib/health-monitoring";
 
 // Validation schemas
 const packageSchema = z.object({
@@ -356,4 +369,92 @@ export const billingRouter = createTRPCRouter({
 				});
 			}
 		}),
+
+	// Environment Validation
+	validateEnvironment: adminProcedure.query(async () => {
+		try {
+			return validateBillingEnvironment();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to validate environment",
+				cause: error,
+			});
+		}
+	}),
+
+	getEnvironmentSummary: adminProcedure.query(async () => {
+		try {
+			return getEnvironmentSummary();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to get environment summary",
+				cause: error,
+			});
+		}
+	}),
+
+	// Database Validation
+	validateDatabase: adminProcedure.query(async () => {
+		try {
+			return await validateBillingDatabase();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to validate database",
+				cause: error,
+			});
+		}
+	}),
+
+	testDatabaseOperations: adminProcedure.query(async () => {
+		try {
+			return await testBillingTableOperations();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to test database operations",
+				cause: error,
+			});
+		}
+	}),
+
+	// Health Monitoring
+	healthCheck: adminProcedure.query(async () => {
+		try {
+			return await performHealthCheck();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to perform health check",
+				cause: error,
+			});
+		}
+	}),
+
+	systemStatus: adminProcedure.query(async () => {
+		try {
+			return await getSystemStatus();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to get system status",
+				cause: error,
+			});
+		}
+	}),
+
+	// Configuration Validation
+	validateConfig: adminProcedure.query(async () => {
+		try {
+			return getConfigSummary();
+		} catch (error) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Failed to validate configuration",
+				cause: error,
+			});
+		}
+	}),
 });

@@ -6,6 +6,10 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz123456789";
 
 const customNanoid = customAlphabet(alphabet, 6);
 
+export const generateId = () => {
+	return customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 12)();
+};
+
 export const generateAppName = (type: string) => {
 	const verb = faker.hacker.verb().replace(/ /g, "-");
 	const adjective = faker.hacker.adjective().replace(/ /g, "-");
