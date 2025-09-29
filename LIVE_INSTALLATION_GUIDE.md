@@ -1,12 +1,12 @@
 # 🚀 Dokpod Live Server Installation Guide - A to Z
 
 ## Overview
-এই গাইড আপনাকে GitHub repository থেকে customized Dokpod একটি live server এ complete install করতে সাহায্য করবে।
+This guide will help you completely install your customized Dokpod from GitHub repository to a live server.
 
 ## 📋 Prerequisites Checklist
 
 ### 🖥️ Server Requirements
-- [ ] **VPS/Cloud Server**: DigitalOcean, Linode, Vultr, বা AWS
+- [ ] **VPS/Cloud Server**: DigitalOcean, Linode, Vultr, or AWS
 - [ ] **Minimum Specs**: 2 vCPU, 4GB RAM, 80GB SSD
 - [ ] **Operating System**: Ubuntu 22.04 LTS (Recommended)
 - [ ] **Root/Sudo Access**: Server administration access
@@ -531,7 +531,7 @@ pnpm build
 
 ## 🎯 Success! Your Customized Dokpod is Live!
 
-আপনার custom billing system এবং monitoring সহ Dokpod এখন live server এ successfully install হয়েছে! 🚀
+Your customized Dokpod with billing system and monitoring is now successfully installed on the live server! 🚀
 
 **Features Active:**
 - ✅ Custom billing integration (WHMCS, Stripe, PayPal)
