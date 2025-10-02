@@ -135,28 +135,29 @@ export function processValue(
 			if (params.length === 1 && params[0] && params[0].match(/^\d{1,3}$/)) {
 				return generateJwt({ length: Number.parseInt(params[0], 10) });
 			}
-			let [secret, payload] = params;
-			if (typeof payload === "string" && variables[payload]) {
-				payload = variables[payload];
+			const [secret, payloadStr] = params;
+			let payload: any = payloadStr;
+			if (typeof payloadStr === "string" && variables[payloadStr]) {
+				payload = variables[payloadStr];
 			}
 			if (
-				typeof payload === "string" &&
-				payload.startsWith("{") &&
-				payload.endsWith("}")
+				typeof payloadStr === "string" &&
+				payloadStr.startsWith("{") &&
+				payloadStr.endsWith("}")
 			) {
 				try {
-					payload = JSON.parse(payload);
+					payload = JSON.parse(payloadStr);
 				} catch (e) {
 					// If payload is not a valid JSON, invalid it
-					payload = undefined;
+					payload = {};
 					console.error("Invalid JWT payload", e);
 				}
 			}
 			if (typeof payload !== "object") {
-				payload = undefined;
+				payload = {};
 			}
 			return generateJwt({
-				secret: secret ? variables[secret] || secret : undefined,
+				secret: secret ? variables[secret] || secret : "",
 				payload: payload as any,
 			});
 		}

@@ -10,9 +10,11 @@ import { findOrganizationById } from "./admin";
 import { findServerById } from "./server";
 
 // @ts-ignore - Suppress deep instantiation warnings
-type DeepPartial<T> = T extends object ? {
-  [P in keyof T]?: DeepPartial<T[P]>;
-} : T;
+type DeepPartial<T> = T extends object
+	? {
+			[P in keyof T]?: DeepPartial<T[P]>;
+		}
+	: T;
 
 export const getAiSettingsByOrganizationId = async (organizationId: string) => {
 	const aiSettings = await db.query.ai.findMany({
@@ -116,24 +118,24 @@ export const suggestVariants = async ({
 			ip = "127.0.0.1";
 		}
 
-	// Define schemas separately to avoid deep type instantiation
-	const suggestionSchema = z.object({
-		id: z.string(),
-		name: z.string(),
-		shortDescription: z.string(),
-		description: z.string(),
-	}) satisfies z.ZodType<{
-		id: string;
-		name: string;
-		shortDescription: string;
-		description: string;
-	}>;
+		// Define schemas separately to avoid deep type instantiation
+		const suggestionSchema = z.object({
+			id: z.string(),
+			name: z.string(),
+			shortDescription: z.string(),
+			description: z.string(),
+		}) satisfies z.ZodType<{
+			id: string;
+			name: string;
+			shortDescription: string;
+			description: string;
+		}>;
 
-	const { object } = await generateObject({
-		model,
-		output: "array" as const,
-		schema: suggestionSchema,
-		prompt: `
+		const { object } = await generateObject({
+			model,
+			output: "array" as const,
+			schema: suggestionSchema,
+			prompt: `
         Act as advanced DevOps engineer and generate a list of open source projects what can cover users needs(up to 3 items), the suggestion 
         should include id, name, shortDescription, and description. Use slug of title for id. 
         
@@ -146,7 +148,8 @@ export const suggestVariants = async ({
         
         ${input}
       `,
-	});		if (object?.length) {
+		});
+		if (object?.length) {
 			const result: SuggestionResult[] = [];
 			for (const suggestion of object) {
 				try {
@@ -174,9 +177,9 @@ export const suggestVariants = async ({
 						configFiles: z.array(configFileSchema),
 					}) satisfies z.ZodType<{
 						dockerCompose: string;
-						envVariables: Array<{ name: string; value: string; }>;
-						domains: Array<{ host: string; port: number; serviceName: string; }>;
-						configFiles: Array<{ content: string; filePath: string; }>;
+						envVariables: Array<{ name: string; value: string }>;
+						domains: Array<{ host: string; port: number; serviceName: string }>;
+						configFiles: Array<{ content: string; filePath: string }>;
 					}>;
 
 					const { object: docker } = await generateObject({

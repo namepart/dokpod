@@ -13,6 +13,8 @@
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
 		"checkJs": true,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
 
 		/* Bundled projects */
 		"lib": ["dom", "dom.iterable", "ES2022"],

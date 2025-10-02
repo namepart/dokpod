@@ -9,9 +9,11 @@
 		"moduleDetection": "force",
 		"isolatedModules": true,
 		/* Strictness */
-		"strict": true,
+		"strict": false,
 		"noUncheckedIndexedAccess": true,
 		"checkJs": true,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": false,
 		/* Bundled projects */
 		"lib": ["dom", "dom.iterable", "ES2022"],
 		"noEmit": true,

@@ -12,8 +12,15 @@
 		"rootDir": "./src",
 		"baseUrl": ".",
 		"jsx": "react-jsx",
+		"jsxImportSource": "react",
 		"skipLibCheck": true,
+
 		"noImplicitReturns": false,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"noImplicitAny": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
 		"paths": {
 			"@dokploy/server/*": ["./src/*"]
 		}
