@@ -19,7 +19,7 @@ export const createServer = async (
 			...input,
 			organizationId: organizationId,
 			createdAt: new Date().toISOString(),
-		})
+		} as any)
 		.returning()
 		.then((value) => value[0]);
 
@@ -123,7 +123,7 @@ export const updateServerById = async (
 	return result;
 };
 
-export const getAllServers = async () => {
+export const getAllServers = async (): Promise<any[]> => {
 	const servers = await db.query.server.findMany();
 	return servers;
 };

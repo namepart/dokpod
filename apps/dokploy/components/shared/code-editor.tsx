@@ -10,9 +10,9 @@ import { StreamLanguage } from "@codemirror/language";
 import { properties } from "@codemirror/legacy-modes/mode/properties";
 import { shell } from "@codemirror/legacy-modes/mode/shell";
 import { EditorView } from "@codemirror/view";
-import { githubDark, githubLight } from "@uiw/codemirror-theme-github";
 import CodeMirror, { type ReactCodeMirrorProps } from "@uiw/react-codemirror";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 // Docker Compose completion options
@@ -143,6 +143,23 @@ export const CodeEditor = ({
 	...props
 }: Props) => {
 	const { resolvedTheme } = useTheme();
+	const [themes, setThemes] = useState<{ dark: any; light: any } | null>(null);
+
+	useEffect(() => {
+		// Dynamically import theme to avoid server-side issues
+		const loadThemes = async () => {
+			try {
+				const { githubDark, githubLight } = await import(
+					"@uiw/codemirror-theme-github"
+				);
+				setThemes({ dark: githubDark, light: githubLight });
+			} catch (error) {
+				console.warn("Failed to load codemirror themes:", error);
+			}
+		};
+		loadThemes();
+	}, []);
+
 	return (
 		<div className={cn("overflow-auto", wrapperClassName)}>
 			<CodeMirror
@@ -153,7 +170,7 @@ export const CodeEditor = ({
 					highlightActiveLine: !props.disabled,
 					allowMultipleSelections: true,
 				}}
-				theme={resolvedTheme === "dark" ? githubDark : githubLight}
+				theme={resolvedTheme === "dark" ? themes?.dark : themes?.light}
 				extensions={[
 					language === "yaml"
 						? yaml()

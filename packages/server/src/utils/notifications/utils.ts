@@ -8,7 +8,7 @@ import type {
 import nodemailer from "nodemailer";
 
 export const sendEmailNotification = async (
-	connection: typeof email.$inferInsert,
+	connection: typeof email.$inferSelect,
 	subject: string,
 	htmlContent: string,
 ) => {
@@ -39,7 +39,7 @@ export const sendEmailNotification = async (
 };
 
 export const sendDiscordNotification = async (
-	connection: typeof discord.$inferInsert,
+	connection: typeof discord.$inferSelect,
 	embed: any,
 ) => {
 	// try {
@@ -54,7 +54,7 @@ export const sendDiscordNotification = async (
 };
 
 export const sendTelegramNotification = async (
-	connection: typeof telegram.$inferInsert,
+	connection: typeof telegram.$inferSelect,
 	messageText: string,
 	inlineButton?: {
 		text: string;
@@ -83,7 +83,7 @@ export const sendTelegramNotification = async (
 };
 
 export const sendSlackNotification = async (
-	connection: typeof slack.$inferInsert,
+	connection: typeof slack.$inferSelect,
 	message: any,
 ) => {
 	try {
@@ -98,7 +98,7 @@ export const sendSlackNotification = async (
 };
 
 export const sendGotifyNotification = async (
-	connection: typeof gotify.$inferInsert,
+	connection: typeof gotify.$inferSelect,
 	title: string,
 	message: string,
 ) => {

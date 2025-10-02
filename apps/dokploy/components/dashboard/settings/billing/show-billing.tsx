@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { api } from "@/utils/api";
-import BillingOverview from "../../billing/billing-overview";
+import BillingOverview from "../../../billing/billing-overview";
 
 export const ShowBilling = () => {
 	const { data: isCloud, isLoading } = api.settings.isCloud.useQuery();

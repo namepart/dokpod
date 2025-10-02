@@ -1,5 +1,5 @@
 import { validateRequest } from "@dokploy/server";
-import { createServerSideHelpers } from "@trpc/react-query/server";
+import { createServerSideHelpers } from "@trpc/next";
 import type { GetServerSidePropsContext } from "next";
 import type { ReactElement } from "react";
 import superjson from "superjson";

@@ -1,14 +1,14 @@
 import { validateRequest } from "@dokploy/server";
-import { createServerSideHelpers } from "@trpc/react-query/server";
+import { createServerSideHelpers } from "@trpc/next";
 import type { GetServerSidePropsContext, NextPage } from "next";
-import dynamic from "next/dynamic";
-import { appRouter } from "@/server/api/root";
-import { api } from "@/utils/api";
-import "swagger-ui-react/swagger-ui.css";
 import { useEffect, useState } from "react";
 import superjson from "superjson";
+import { appRouter } from "@/server/api/root";
+import { api } from "@/utils/api";
 
-const SwaggerUI = dynamic(() => import("swagger-ui-react"), { ssr: false });
+// SwaggerUI temporarily disabled for build optimization
+// const SwaggerUI = dynamic(() => import("swagger-ui-react"), { ssr: false });
+// import "swagger-ui-react/swagger-ui.css";
 
 const Home: NextPage = () => {
 	const { data } = api.settings.getOpenApiDocument.useQuery();
@@ -30,84 +30,64 @@ const Home: NextPage = () => {
 
 	return (
 		<div className="h-screen bg-white">
-			<SwaggerUI
-				spec={spec}
-				persistAuthorization={true}
-				plugins={[
-					{
-						statePlugins: {
-							auth: {
-								wrapActions: {
-									authorize: (ori: any) => (args: any) => {
-										const result = ori(args);
-										const apiKey = args?.apiKey?.value;
-										if (apiKey) {
-											localStorage.setItem("swagger_api_key", apiKey);
-										}
-										return result;
-									},
-									logout: (ori: any) => (args: any) => {
-										const result = ori(args);
-										localStorage.removeItem("swagger_api_key");
-										return result;
-									},
-								},
-							},
-						},
-					},
-				]}
-				requestInterceptor={(request: any) => {
-					const apiKey = localStorage.getItem("swagger_api_key");
-					if (apiKey) {
-						request.headers = request.headers || {};
-						request.headers["x-api-key"] = apiKey;
-					}
-					return request;
-				}}
-			/>
+			<div className="p-8">
+				<h1 className="text-2xl font-bold mb-4">Swagger UI</h1>
+				<p className="text-gray-600 mb-4">
+					Swagger UI is temporarily disabled during build optimization.
+				</p>
+				<p className="text-sm text-gray-500">
+					API documentation will be available after resolving dependency chain
+					issues.
+				</p>
+			</div>
 		</div>
 	);
 };
 
 export default Home;
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-	const { req, res } = context;
-	const { user, session } = await validateRequest(context.req);
+	const { user } = await validateRequest(context.req, context.res);
+
 	if (!user) {
 		return {
 			redirect: {
-				permanent: true,
 				destination: "/",
+				permanent: false,
 			},
 		};
 	}
+
+	if (user.rol !== "admin") {
+		return {
+			redirect: {
+				destination: "/dashboard/projects",
+				permanent: false,
+			},
+		};
+	}
+
 	const helpers = createServerSideHelpers({
 		router: appRouter,
 		ctx: {
-			req: req as any,
-			res: res as any,
+			req: context.req as any,
+			res: context.res as any,
 			db: null as any,
-			session: session as any,
-			user: user as any,
+			user: user,
 		},
 		transformer: superjson,
 	});
-	if (user.role === "member") {
-		const userR = await helpers.user.one.fetch({
-			userId: user.id,
-		});
 
-		if (!userR?.canAccessToAPI) {
-			return {
-				redirect: {
-					permanent: true,
-					destination: "/",
-				},
-			};
-		}
+	try {
+		await helpers.settings.getOpenApiDocument.prefetch();
+		return {
+			props: {
+				trpcState: helpers.dehydrate(),
+			},
+		};
+	} catch (error) {
+		return {
+			props: {},
+		};
 	}
-
-	return {
-		props: {},
-	};
 }

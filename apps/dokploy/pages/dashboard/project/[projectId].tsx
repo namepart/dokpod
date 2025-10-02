@@ -1,6 +1,6 @@
 import type { findProjectById } from "@dokploy/server";
 import { validateRequest } from "@dokploy/server/lib/auth";
-import { createServerSideHelpers } from "@trpc/react-query/server";
+import { createServerSideHelpers } from "@trpc/next";
 import {
 	Ban,
 	Check,

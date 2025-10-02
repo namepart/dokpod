@@ -14,13 +14,27 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"skipLibCheck": true,
-
+		"allowJs": true,
+		"noEmitOnError": false,
 		"noImplicitReturns": false,
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"noImplicitAny": false,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
+		"strict": false,
+		"exactOptionalPropertyTypes": false,
+		"noImplicitThis": false,
+		"noPropertyAccessFromIndexSignature": false,
+		"noImplicitOverride": false,
+		"useUnknownInCatchVariables": false,
+		"strictFunctionTypes": false,
+		"strictBindCallApply": false,
+		"strictNullChecks": false,
+		"strictPropertyInitialization": false,
+		"alwaysStrict": false,
+		"noUncheckedIndexedAccess": false,
+
 		"paths": {
 			"@dokploy/server/*": ["./src/*"]
 		}

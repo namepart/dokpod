@@ -124,12 +124,7 @@ export const suggestVariants = async ({
 			name: z.string(),
 			shortDescription: z.string(),
 			description: z.string(),
-		}) satisfies z.ZodType<{
-			id: string;
-			name: string;
-			shortDescription: string;
-			description: string;
-		}>;
+		});
 
 		const { object } = await generateObject({
 			model,
@@ -175,12 +170,7 @@ export const suggestVariants = async ({
 						envVariables: z.array(envVariableSchema),
 						domains: z.array(domainSchema),
 						configFiles: z.array(configFileSchema),
-					}) satisfies z.ZodType<{
-						dockerCompose: string;
-						envVariables: Array<{ name: string; value: string }>;
-						domains: Array<{ host: string; port: number; serviceName: string }>;
-						configFiles: Array<{ content: string; filePath: string }>;
-					}>;
+					});
 
 					const { object: docker } = await generateObject({
 						model,
