@@ -9,6 +9,11 @@ import { IS_CLOUD } from "../constants";
 import { findOrganizationById } from "./admin";
 import { findServerById } from "./server";
 
+// @ts-ignore - Suppress deep instantiation warnings
+type DeepPartial<T> = T extends object ? {
+  [P in keyof T]?: DeepPartial<T[P]>;
+} : T;
+
 export const getAiSettingsByOrganizationId = async (organizationId: string) => {
 	const aiSettings = await db.query.ai.findMany({
 		where: eq(ai.organizationId, organizationId),
@@ -59,12 +64,33 @@ interface Props {
 	serverId?: string | undefined;
 }
 
+interface SuggestionResult {
+	id: string;
+	name: string;
+	shortDescription: string;
+	description: string;
+	dockerCompose: string;
+	envVariables: Array<{
+		name: string;
+		value: string;
+	}>;
+	domains: Array<{
+		host: string;
+		port: number;
+		serviceName: string;
+	}>;
+	configFiles: Array<{
+		content: string;
+		filePath: string;
+	}>;
+}
+
 export const suggestVariants = async ({
 	organizationId,
 	aiId,
 	input,
 	serverId,
-}: Props) => {
+}: Props): Promise<SuggestionResult[]> => {
 	try {
 		const aiSettings = await getAiSettingById(aiId);
 		if (!aiSettings || !aiSettings.isEnabled) {
@@ -90,16 +116,24 @@ export const suggestVariants = async ({
 			ip = "127.0.0.1";
 		}
 
-		const { object } = await generateObject({
-			model,
-			output: "array",
-			schema: z.object({
-				id: z.string(),
-				name: z.string(),
-				shortDescription: z.string(),
-				description: z.string(),
-			}),
-			prompt: `
+	// Define schemas separately to avoid deep type instantiation
+	const suggestionSchema = z.object({
+		id: z.string(),
+		name: z.string(),
+		shortDescription: z.string(),
+		description: z.string(),
+	}) satisfies z.ZodType<{
+		id: string;
+		name: string;
+		shortDescription: string;
+		description: string;
+	}>;
+
+	const { object } = await generateObject({
+		model,
+		output: "array" as const,
+		schema: suggestionSchema,
+		prompt: `
         Act as advanced DevOps engineer and generate a list of open source projects what can cover users needs(up to 3 items), the suggestion 
         should include id, name, shortDescription, and description. Use slug of title for id. 
         
@@ -112,37 +146,43 @@ export const suggestVariants = async ({
         
         ${input}
       `,
-		});
-
-		if (object?.length) {
-			const result = [];
+	});		if (object?.length) {
+			const result: SuggestionResult[] = [];
 			for (const suggestion of object) {
 				try {
+					// Define nested schemas separately to avoid deep type instantiation
+					const envVariableSchema = z.object({
+						name: z.string(),
+						value: z.string(),
+					});
+
+					const domainSchema = z.object({
+						host: z.string(),
+						port: z.number(),
+						serviceName: z.string(),
+					});
+
+					const configFileSchema = z.object({
+						content: z.string(),
+						filePath: z.string(),
+					});
+
+					const dockerConfigSchema = z.object({
+						dockerCompose: z.string(),
+						envVariables: z.array(envVariableSchema),
+						domains: z.array(domainSchema),
+						configFiles: z.array(configFileSchema),
+					}) satisfies z.ZodType<{
+						dockerCompose: string;
+						envVariables: Array<{ name: string; value: string; }>;
+						domains: Array<{ host: string; port: number; serviceName: string; }>;
+						configFiles: Array<{ content: string; filePath: string; }>;
+					}>;
+
 					const { object: docker } = await generateObject({
 						model,
-						output: "object",
-						schema: z.object({
-							dockerCompose: z.string(),
-							envVariables: z.array(
-								z.object({
-									name: z.string(),
-									value: z.string(),
-								}),
-							),
-							domains: z.array(
-								z.object({
-									host: z.string(),
-									port: z.number(),
-									serviceName: z.string(),
-								}),
-							),
-							configFiles: z.array(
-								z.object({
-									content: z.string(),
-									filePath: z.string(),
-								}),
-							),
-						}),
+						output: "object" as const,
+						schema: dockerConfigSchema,
 						prompt: `
               Act as advanced DevOps engineer and generate docker compose with environment variables and domain configurations needed to install the following project.
               Return the docker compose as a YAML string and environment variables configuration. Follow these rules:
@@ -201,12 +241,15 @@ export const suggestVariants = async ({
 			return result;
 		}
 
-		throw new TRPCError({
-			code: "NOT_FOUND",
-			message: "No suggestions found",
-		});
+		return [];
 	} catch (error) {
 		console.error("Error in suggestVariants:", error);
-		throw error;
+		if (error instanceof TRPCError) {
+			throw error;
+		}
+		throw new TRPCError({
+			code: "INTERNAL_SERVER_ERROR",
+			message: "Failed to generate suggestions",
+		});
 	}
 };

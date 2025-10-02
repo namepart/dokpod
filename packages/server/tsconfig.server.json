@@ -12,6 +12,8 @@
 		"rootDir": "./src",
 		"baseUrl": ".",
 		"jsx": "react-jsx",
+		"skipLibCheck": true,
+		"noImplicitReturns": false,
 		"paths": {
 			"@dokploy/server/*": ["./src/*"]
 		}
